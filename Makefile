@@ -11,21 +11,21 @@
 # **************************************************************************** #
 
 NAME =			osamoile.filler
-HEADER =		-I ./includes \
+INC =			-I ./includes \
 				-I ./libft/includes
-FLAGS =			-Wall -Werror -Wextra
 LIB =			-lft -L ./libft
+FLAGS =			#-Wall -Wextra -Werror
 LIST =			main
 OBJ =			$(addprefix obj/, $(addsuffix .o, $(LIST)))
 
 all: $(NAME)
 
 obj/%.o: src/%.c
-	@gcc $(FLAGS) -c $< -o $@ $(HEADER)
+	gcc $(FLAGS) -c $< -o $@ $(INC)
 
 $(NAME): obj $(OBJ)
 	@make -C libft
-	@gcc $(OBJ) -o $(NAME) $(LIB)
+	gcc $(OBJ) -o $(NAME) $(LIB)
 
 obj:
 	@mkdir obj

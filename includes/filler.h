@@ -13,6 +13,13 @@
 #ifndef FILLER_H
 # define FILLER_H
 
-// # include "libft.h"
+# include "libft.h"
+
+typedef struct		s_array
+{
+	char	**array;
+	int		x;
+	int		y;
+}					t_array;
 
 #endif
