@@ -67,66 +67,73 @@ t_array		get_map(char *plateau)
 	return (map);
 }
 
-void		put_figure(t_array map, t_array figure)
-{
-	int		i;
-	int		j;
 
-	int res_x = 0;
-	int res_y = 0;
+int			main(void)
+{
+	// char	*line;
 	
+	// get_next_line(0, &line);
+	// while (ft_strstr(line, "Plateau") == 0)
+	// {
+	// 	ft_strdel(&line);
+	// 	get_next_line(0, &line); // $$$exec, launched etc
+	// }
+	// t_array	map = get_map(line);
+	// t_array	figure = get_figure();
+	int i;
+	int j;
+
+	t_array map;
+	map.x = 15;
+	map.y = 17;
+	map.array = ft_memalloc(map.x * sizeof(char*));
+	i = 0;
+	map.array[i++] = "................."; //000
+	map.array[i++] = "................."; //001
+	map.array[i++] = "................."; //002
+	map.array[i++] = "................."; //003
+	map.array[i++] = "................."; //004
+	map.array[i++] = "................."; //005
+	map.array[i++] = "................."; //006
+	map.array[i++] = "................."; //007
+	map.array[i++] = "..O.............."; //008
+	map.array[i++] = "................."; //009
+	map.array[i++] = "................."; //010
+	map.array[i++] = "................."; //011
+	map.array[i++] = "..............X.."; //012
+	map.array[i++] = "................."; //013
+	map.array[i++] = "................."; //014
+
+	t_array figure;
+	figure.x = 2;
+	figure.y = 2;
+	figure.array = ft_memalloc(figure.x * sizeof(char*));
+	figure.array[0] = "*.";
+	figure.array[1] = "*.";
+	
+	i = -1;
+	while (++i < map.x)
+		ft_printf("%s\n", map.array[i]);
+	i = -1;
+	while (++i < figure.x)
+		ft_printf("%s\n", figure.array[i]);
+
 	i = -1;
 	while (++i < map.x)
 	{
 		j = -1;
-		while(++j < map.y)
+		while (++j < map.y)
 		{
-			int sum = 0;
-			if (map.x < i + figure.x && map.y < j + figure.y)
-			{
-				int n = 0;
-				int m = 0;
-				// int n = -1;
-				// while (++n < figure.x)
-				// {
-				// 	int m = -1;
-				// 	while (++m < figure.y)
-				// 	{
-						if (map.array[i + n][j + m] == 'O' &&
-							figure.array[n][m] == '*')
-							sum++;
-				// 	}
-				// }
-				if (sum == 1)
-				{
-					res_x = i;
-					res_y = j;
-				}
-			}
-			
+			if (map.array[i][j] == 'O' || map.array[i][j] == 'o')
+				ft_printf("%c", '1');
+			else
+				ft_printf("%c", map.array[i][j]);
 		}
+		ft_printf("\n");
 	}
-	ft_printf("%d %d\n", res_x, res_y);
-}
 
 
-int			main(void)
-{
-	char	*line;
-	
-	get_next_line(0, &line);
-	while (ft_strstr(line, "Plateau") == 0)
-	{
-		ft_strdel(&line);
-		get_next_line(0, &line); // $$$exec, launched etc
-	}
-	
-
-	t_array	map = get_map(line);
-	t_array	figure = get_figure();
-
-	put_figure(map, figure);
-	
+	// put_figure(map, figure);
 	
 	return (0);
 }
