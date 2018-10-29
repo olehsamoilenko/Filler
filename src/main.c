@@ -11,112 +11,12 @@
 /* ************************************************************************** */
 
 #include <filler.h>
+#include <fcntl.h> // trahs
 
-t_array		get_figure()
+void		put_piece(t_array map, t_array piece)
 {
-	char	*line;
-	t_array	figure;
-	char	**output;
-	int		i;
-
-	get_next_line(0, &line); // Piece 1 3:
-	output = ft_strsplit(line, ' ');
-	ft_strdel(&line);
-	figure.x = ft_atoi(output[1]);
-	figure.y = ft_atoi(output[2]);
-	ft_arrclr(output);
-	figure.array = ft_memalloc(figure.x * sizeof(char*));
-	// array[x] = 0;
-	i = -1;
-	while(++i < figure.x)
-	{
-		get_next_line(0, &line);
-		figure.array[i] = ft_memalloc(figure.y * sizeof(char));
-		ft_strcpy(figure.array[i], line);
-		ft_strdel(&line);
-	}
-	return (figure);
-}
-
-t_array		get_map(char *plateau)
-{
-	char	*line;
-	char	**output;
-	t_array	map;
-	int		i;
-
-	// get_next_line(0, &line); // Plateau 15 17:
-	output = ft_strsplit(plateau, ' ');
-	// ft_strdel(&line);
-	map.x = ft_atoi(output[1]);
-	map.y = ft_atoi(output[2]);
-	ft_arrclr(output);
-	get_next_line(0, &line); // 01234567890123456
-	ft_strdel(&line);
-	map.array = ft_memalloc(map.x * sizeof(char*));
-	// map.array[map.x] = 0;
-	i = -1;
-	while(++i < map.x)
-	{
-		get_next_line(0, &line);
-		map.array[i] = ft_memalloc(map.y * sizeof(char));
-		// map.array[i][map.y] = 0;
-		ft_strcpy(map.array[i], &line[4]);
-		ft_strdel(&line);
-	}
-	return (map);
-}
-
-
-int			main(void)
-{
-	// char	*line;
-	
-	// get_next_line(0, &line);
-	// while (ft_strstr(line, "Plateau") == 0)
-	// {
-	// 	ft_strdel(&line);
-	// 	get_next_line(0, &line); // $$$exec, launched etc
-	// }
-	// t_array	map = get_map(line);
-	// t_array	figure = get_figure();
 	int i;
 	int j;
-
-	t_array map;
-	map.x = 15;
-	map.y = 17;
-	map.array = ft_memalloc(map.x * sizeof(char*));
-	i = 0;
-	map.array[i++] = "................."; //000
-	map.array[i++] = "................."; //001
-	map.array[i++] = "................."; //002
-	map.array[i++] = "................."; //003
-	map.array[i++] = "................."; //004
-	map.array[i++] = "................."; //005
-	map.array[i++] = "................."; //006
-	map.array[i++] = "................."; //007
-	map.array[i++] = "..O.............."; //008
-	map.array[i++] = "................."; //009
-	map.array[i++] = "................."; //010
-	map.array[i++] = "................."; //011
-	map.array[i++] = "..............X.."; //012
-	map.array[i++] = "................."; //013
-	map.array[i++] = "................."; //014
-
-	t_array figure;
-	figure.x = 2;
-	figure.y = 2;
-	figure.array = ft_memalloc(figure.x * sizeof(char*));
-	figure.array[0] = "*.";
-	figure.array[1] = "*.";
-	
-	i = -1;
-	while (++i < map.x)
-		ft_printf("%s\n", map.array[i]);
-	i = -1;
-	while (++i < figure.x)
-		ft_printf("%s\n", figure.array[i]);
 
 	i = -1;
 	while (++i < map.x)
@@ -124,16 +24,131 @@ int			main(void)
 		j = -1;
 		while (++j < map.y)
 		{
-			if (map.array[i][j] == 'O' || map.array[i][j] == 'o')
-				ft_printf("%c", '1');
-			else
-				ft_printf("%c", map.array[i][j]);
+			int sum = 0;
+			if (i + piece.x <= map.x && j + piece.y <= map.y)
+			{
+				int n = -1;
+				while (++n < piece.x)
+				{
+					int m = -1;
+					while (++m < piece.y)
+					{
+						if (piece.array[n][m] == '*' &&
+						(map.array[i + n][j + m] == 'O' || map.array[i + n][j + m] == 'o'))
+							sum++;
+						if (piece.array[n][m] == '*' &&
+						(map.array[i + n][j + m] == 'x' || map.array[i + n][j + m] == 'X'))
+							sum+=2;
+					}
+				}
+			}
+			if (sum == 1)
+			{
+				ft_printf("%i %i\n", i, j);
+				return;
+			}
 		}
-		ft_printf("\n");
+		
+	}
+	ft_printf("0 0\n");
+}
+
+void		fill_map(t_array map)
+{
+	int		i;
+	char	*line;
+
+	i = -1;
+	while (++i < map.x)
+	{
+		get_next_line(0, &line);
+		ft_strcpy(&map.array[i][0], &line[4]);
+		ft_strdel(&line);
+	}
+}
+
+void		create_map(t_array *map)
+{
+	char	*line;
+	char	**output;
+	int		i;
+
+	get_next_line(0, &line); //Plateau 15 17:
+	output = ft_strsplit(line, ' ');
+	map->x = ft_atoi(output[1]);
+	map->y = ft_atoi(output[2]);
+	ft_arrclr(output);
+	map->array = ft_memalloc(map->x * sizeof(char*));
+	i = -1;
+	while (++i < map->x)
+		map->array[i] = ft_memalloc(map->y * sizeof(char));
+}
+
+void		take_piece(t_array *piece)
+{
+	char	*line;
+	char	**output;
+	int		i;
+
+	get_next_line(0, &line);
+	output = ft_strsplit(line, ' ');
+	ft_strdel(&line);
+	piece->x = ft_atoi(output[1]);
+	piece->y = ft_atoi(output[2]);
+	ft_arrclr(output);
+	piece->array = ft_memalloc(piece->x * sizeof(char*));
+	i = -1;
+	while (++i < piece->x)
+	{
+		get_next_line(0, &line);
+		piece->array[i] = ft_memalloc(piece->y * sizeof(char));
+		ft_strcpy(&piece->array[i][0], &line[0]);
+		ft_strdel(&line);
+	}
+}
+
+int			main(void)
+{
+	int fd = open("file.txt", O_RDWR);
+
+	char	*line;
+	int i;
+
+	t_array map;
+	map.array = NULL;
+	
+
+	t_array piece;
+	piece.array = NULL;
+
+	// header $$$ exec p1 : [./osamoile.filler]
+	get_next_line(0, &line);
+	ft_strdel(&line);
+	// ft_putstr_fd(ft_strjoin(line, "\n"), fd);
+	// header
+
+	while (1)
+	{
+		if (map.array == NULL)
+			create_map(&map);
+		else
+		{
+			
+			get_next_line(0, &line); // skip plateau
+			ft_strdel(&line);
+
+		}
+		
+		get_next_line(0, &line);
+		ft_strdel(&line);
+		fill_map(map);
+		if (piece.array != NULL)
+			ft_arrclr(piece.array); // HERE IS THE PROBLEM
+		take_piece(&piece);
+		// ft_arrclr(piece.array);
+		put_piece(map, piece);
+
 	}
 
-
-	// put_figure(map, figure);
-	
 	return (0);
 }
