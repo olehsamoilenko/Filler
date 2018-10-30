@@ -25,5 +25,5 @@ void	ft_arrclr(char **arr)
 		i++;
 	}
 	free(arr);
-	arr = 0;
+	arr = NULL;
 }

@@ -50,7 +50,7 @@ void		put_piece(t_array map, t_array piece)
 		}
 		
 	}
-	ft_printf("0 0\n");
+	ft_printf("8 2\n");
 }
 
 void		fill_map(t_array map)
@@ -67,88 +67,72 @@ void		fill_map(t_array map)
 	}
 }
 
-void		create_map(t_array *map)
+void		create_map(char *plateau, t_array *map)
 {
-	char	*line;
 	char	**output;
 	int		i;
 
-	get_next_line(0, &line); //Plateau 15 17:
-	output = ft_strsplit(line, ' ');
-	map->x = ft_atoi(output[1]);
-	map->y = ft_atoi(output[2]);
-	ft_arrclr(output);
-	map->array = ft_memalloc(map->x * sizeof(char*));
-	i = -1;
-	while (++i < map->x)
-		map->array[i] = ft_memalloc(map->y * sizeof(char));
+		output = ft_strsplit(plateau, ' ');
+		map->x = ft_atoi(output[1]);
+		map->y = ft_atoi(output[2]);
+		ft_arrclr(output);
+		map->array = ft_memalloc((map->x + 1) * sizeof(char*));
+		map->array[map->x] = NULL;
+		i = -1;
+		while (++i < map->x)
+			map->array[i] = ft_strnew(map->y);
+
+	
 }
 
-void		take_piece(t_array *piece)
+void		take_piece(char *params, t_array *piece)
 {
 	char	*line;
 	char	**output;
 	int		i;
 
-	get_next_line(0, &line);
-	output = ft_strsplit(line, ' ');
-	ft_strdel(&line);
-	piece->x = ft_atoi(output[1]);
-	piece->y = ft_atoi(output[2]);
-	ft_arrclr(output);
-	piece->array = ft_memalloc(piece->x * sizeof(char*));
-	i = -1;
-	while (++i < piece->x)
-	{
-		get_next_line(0, &line);
-		piece->array[i] = ft_memalloc(piece->y * sizeof(char));
-		ft_strcpy(&piece->array[i][0], &line[0]);
-		ft_strdel(&line);
-	}
+		output = ft_strsplit(params, ' ');
+		ft_strdel(&params);
+		piece->x = ft_atoi(output[1]);
+		piece->y = ft_atoi(output[2]);
+		ft_arrclr(output);
+		piece->array = ft_memalloc((piece->x + 1) * sizeof(char*));
+		piece->array[piece->x] = NULL;
+		i = -1;
+		while (++i < piece->x)
+		{
+			get_next_line(0, &line);
+			piece->array[i] = ft_strnew(piece->y);
+			ft_strcpy(&piece->array[i][0], &line[0]);
+			ft_strdel(&line);
+		}
+	
 }
 
 int			main(void)
 {
-	int fd = open("file.txt", O_RDWR);
-
 	char	*line;
-	int i;
+	t_array	map;
+	t_array	piece;
 
-	t_array map;
-	map.array = NULL;
-	
-
-	t_array piece;
-	piece.array = NULL;
-
-	// header $$$ exec p1 : [./osamoile.filler]
-	get_next_line(0, &line);
+	get_next_line(0, &line); // header $$$ exec p1 : [./osamoile.filler]
 	ft_strdel(&line);
-	// ft_putstr_fd(ft_strjoin(line, "\n"), fd);
-	// header
-
 	while (1)
 	{
-		if (map.array == NULL)
-			create_map(&map);
-		else
-		{
-			
-			get_next_line(0, &line); // skip plateau
-			ft_strdel(&line);
-
-		}
-		
 		get_next_line(0, &line);
+		if (!ft_strstr(line, "Plateau"))
+			return (0);
+		if (map.array == NULL)
+			create_map(line, &map);
+		ft_strdel(&line);
+		get_next_line(0, &line); // skip 0123456789
 		ft_strdel(&line);
 		fill_map(map);
+		get_next_line(0, &line);
 		if (piece.array != NULL)
-			ft_arrclr(piece.array); // HERE IS THE PROBLEM
-		take_piece(&piece);
-		// ft_arrclr(piece.array);
+			ft_arrclr(piece.array);
+		take_piece(line, &piece);
 		put_piece(map, piece);
-
 	}
-
 	return (0);
 }
