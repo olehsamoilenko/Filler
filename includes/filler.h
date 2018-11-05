@@ -22,13 +22,6 @@ typedef struct		s_array
 	int		y;
 }					t_array;
 
-typedef struct		s_dot
-{
-	int		x;
-	int		y;
-	int		my_dist;
-	int		op_dist;
-	int		reached;
-}					t_dot;
+
 
 #endif

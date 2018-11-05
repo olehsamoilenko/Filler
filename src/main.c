@@ -21,6 +21,8 @@ void		put_piece(t_array map, int ***dist_map, t_array piece, char me, char oppon
 	int put_y = 0;
 
 	int dist_min = 10000;
+	float dist_avg = 10000;
+	int count;
 	i = -1;
 	while (++i < map.x)
 	{
@@ -35,6 +37,7 @@ void		put_piece(t_array map, int ***dist_map, t_array piece, char me, char oppon
 				while (++n < piece.x)
 				{
 					int m = -1;
+					count = 0;
 					while (++m < piece.y)
 					{
 
@@ -44,46 +47,36 @@ void		put_piece(t_array map, int ***dist_map, t_array piece, char me, char oppon
 								stacking_sum++;
 							else if (ft_tolower(map.array[i + n][j + m]) == opponent)
 								stacking_sum += 2;
-							else
-							{
-								dist_sum += (*dist_map)[i + n][j + m];
-							}
+
+							dist_sum += (*dist_map)[i + n][j + m];
+							count++;
 						} 
 					}
 				}
 			}
-			if (stacking_sum == 1 && dist_sum < dist_min)
+			if (stacking_sum == 1 && (float)dist_sum / count < dist_avg)
 			{
 				put_x = i;
 				put_y = j;
 				dist_min = dist_sum;
+				dist_avg = (float)dist_sum / count;
+				
 			}
 
 		}
 	}
-	// ft_putnbr_fd(put_x, fd);
-	// ft_putstr_fd(" - figure x\n", fd);
-	// ft_putnbr_fd(put_y, fd);
-	// ft_putstr_fd(" - figure y\n", fd);
+	ft_putnbr_fd(put_x, fd);
+	ft_putstr_fd(" - put x\n", fd);
+	ft_putnbr_fd(put_y, fd);
+	ft_putstr_fd(" - put y\n", fd);
+
+	
 	ft_printf("%i %i\n", put_x - start_x, put_y - start_y);
 
-	// ft_putstr_fd("FROM PUT_PIECE:\n", fd);
-	// int i = -1;
-	// while (++i < map.x)
-	// {
-	// 	int j = -1;
-	// 	while (++j < map.y)
-	// 	{
-	// 		ft_putnbr_fd((*dist_map)[i][j], fd);
-	// 		ft_putchar_fd(' ', fd);
-	// 	}
-	// 	ft_putchar_fd('\n', fd);
-	// }
-	// ft_putchar_fd('\n', fd);
-	// ft_printf("%i %i\n", 0, 0);
+
 }
 
-void		fill_map(t_array map, int fd)
+void		fill_map(t_array map, int fd, char opponent, int *op_x, int *op_y)
 {
 	int		i;
 	char	*line;
@@ -91,9 +84,24 @@ void		fill_map(t_array map, int fd)
 	i = -1;
 	while (++i < map.x)
 	{
+		// *op_x = 0;
+		// *op_y = 0;
 		get_next_line(0, &line);
+
 		ft_putstr_fd(line, fd);
 		ft_putchar_fd('\n', fd);
+		int j = -1;
+		while (++j < map.y)
+		{
+			if (ft_tolower(line[j + 4]) == opponent &&
+			ft_tolower(map.array[i][j]) != opponent)
+			{
+				*op_x = i;
+				*op_y = j;
+			}
+		}
+
+
 		ft_strcpy(&map.array[i][0], &line[4]);
 		ft_strdel(&line);
 	}
@@ -249,6 +257,7 @@ void		distance_to_opponent(t_array map, int ***dist_map, char me, char opponent)
 	int		j;
 	int		n;
 	int		m;
+	int		res;
 
 	i = -1;
 	while (++i < map.x)
@@ -296,6 +305,37 @@ int		distance_to_cell(t_array map, int ***dist_map, char player, int x, int y)
 	return (min);
 }
 
+void	analyze_map(t_array map, int *me_top, int *op_top, int *me_left, int *op_left, char me, char opponent)
+{
+	int i;
+	int j;
+
+	i = map.x;
+	while (--i >= 0)
+	{
+		j = -1;
+		while (++j < map.y)
+		{
+			if (ft_tolower(map.array[i][j]) == me)
+				*me_top = i;
+			if (ft_tolower(map.array[i][j]) == opponent)
+				*op_top = i;
+		}
+	}
+	j = map.y;
+	while (--j >= 0)
+	{
+		i = -1;
+		while (++i < map.x)
+		{
+			if (ft_tolower(map.array[i][j]) == me)
+				*me_left = j;
+			if (ft_tolower(map.array[i][j]) == opponent)
+				*op_left = j;
+		}
+	}
+}
+
 int			main(void)
 {
 	char	*line;
@@ -310,11 +350,10 @@ int			main(void)
 	int j;
 
 
-	t_dot	*dots;
-	int n_dots;
+
 	
 
-
+	int order = 0;
 
 	piece.array = NULL;
 
@@ -342,186 +381,67 @@ int			main(void)
 		if (map.array == NULL)
 		{
 			map = create_map(line, &dist_map);
-			n_dots = 25;
-			dots = ft_memalloc(n_dots * sizeof(t_dot));
-			
-			i = -1;
-			while (++i < 5)
-			{
-				j = -1;
-				while (++j < 5)
-				{
-					dots[5 * i + j].x = i * 1 * map.x / 5;
-					dots[5 * i + j].y = j * 1 * map.y / 5;
-				}
-			}
-			// dots[0].x = 3 * map.x / 4 ;
-			// dots[0].y = 3 * map.y / 4 ;
-
-			// dots[1].x = 1 * map.x / 2 ;
-			// dots[1].y = 3 * map.y / 4 ;
-
-			// dots[2].x = 3 * map.x / 4 ;
-			// dots[2].y = 1 * map.y / 2 ;
-
-			// dots[3].x = 1 * map.x / 2 ;
-			// dots[3].y = 1 * map.y / 2 ;
-
-			// dots[4].x = 1 * map.x / 4 ;
-			// dots[4].y = 3 * map.y / 4 ;
-
-			// dots[5].x = 3 * map.x / 4 ;
-			// dots[5].y = 1 * map.y / 4 ;
-
-			// dots[6].x = 1 * map.x / 4 ;
-			// dots[6].y = 1 * map.y / 2 ;
-
-			// dots[7].x = 1 * map.x / 2 ;
-			// dots[7].y = 1 * map.y / 4 ;
-
-			// dots[8].x = 1 * map.x / 4 ;
-			// dots[8].y = 1 * map.y / 4 ;
 
 		}
-			
-
 		ft_strdel(&line);
 		get_next_line(0, &line); // skip 0123456789
 		ft_strdel(&line);
-		fill_map(map, debug);
-
-		
-
-		// check
-		// int i = -1;
-		// while (++i < map.x)
-		// {
-		// 	int j = -1;
-		// 	while (++j < map.y)
-		// 	{
-		// 		ft_putnbr_fd(dist_map[i][j], debug);
-		// 		ft_putchar_fd(' ', debug);
-		// 	}
-		// 	ft_putchar_fd('\n', debug);
-		// }
-		// check
-
+		int op_x = 0;
+		int op_y = 0;
+		fill_map(map, debug, opponent, &op_x, &op_y);
+		// where is opponent moving ?
+		// ft_putnbr_fd(op_x, debug);
+		// ft_putstr_fd(" - op x\n", debug);
+		// ft_putnbr_fd(op_y, debug);
+		// ft_putstr_fd(" - op y\n", debug);
+		// where is opponent moving ?
 
 		get_next_line(0, &line);
 		if (piece.array != NULL)
 			ft_arrclr(piece.array);
 		piece = take_piece(line);
 
-		// check
-		// i = -1;
-		// while (++i < piece.x)
-		// {
-		// 	ft_putstr_fd(piece.array[i], debug);
-		// 	ft_putchar_fd('\n', debug);
-		// }
-		// check
-
 		start_x = 0;
 		start_y = 0;
 		reshape(&piece, debug, &start_x, &start_y);
 
-		// check start
-		// ft_putnbr_fd(start_x, fd);
-		// ft_putstr_fd(" - start x\n", fd);
-		// ft_putnbr_fd(start_y, fd);
-		// ft_putstr_fd(" - start y\n", fd);
-		// check start
-
-		// check
-		// ft_putstr_fd("AFTER RESHAPING\n", debug);
 		i = -1;
 		while (++i < piece.x)
 		{
 			ft_putstr_fd(piece.array[i], debug);
 			ft_putchar_fd('\n', debug);
 		}
-		// check
 
-		// int k = -1;
-		// int min;
-		// while (++k < n_dots)
-		// {
-		// 	min = distance_to_cell(map, &dist_map, me, dots[k].x, dots[k].y);
-		// 	ft_putnbr_fd(min, debug);
-		// 	ft_putstr_fd(" - min, ", debug);
-		// 	ft_putnbr_fd(k, debug);
-		// 	ft_putstr_fd(" - k\n", debug);
-		// 	if (min > 5)
-		// 		break;
-		// }
-		// if (k == n_dots)
-		// {
-		// 	ft_putstr_fd("attack!\n", debug);
-		// 	distance_to_opponent(map, &dist_map, me, opponent);
-		// }
+			int me_top = 0;
+			int op_top = 0;
+			int me_left = 0;
+			int op_left = 0;
+			analyze_map(map, &me_top, &op_top, &me_left, &op_left, me, opponent);
+			ft_putnbr_fd(me_top, debug);
+			ft_putstr_fd(" - me top\n", debug);
+			ft_putnbr_fd(op_top, debug);
+			ft_putstr_fd(" - op top\n", debug);
+			ft_putnbr_fd(me_left, debug);
+			ft_putstr_fd(" - me left\n", debug);
+			ft_putnbr_fd(op_left, debug);
+			ft_putstr_fd(" - op left\n", debug);
 
-		i = -1;
-		int max_dist = 0;
-		int best = -1;
-		while (++i < n_dots)
-		{
-			dots[i].my_dist = distance_to_cell(map, &dist_map, me, dots[i].x, dots[i].y);
-			dots[i].op_dist = distance_to_cell(map, &dist_map, opponent, dots[i].x, dots[i].y);
-			if (dots[i].my_dist <= 1 || dots[i].op_dist <= 1)
-				dots[i].reached = 1;
-			ft_putnbr_fd(dots[i].reached, debug);
-			ft_putstr_fd(" Dot ", debug);
-			ft_putnbr_fd(i, debug);
-			ft_putstr_fd(" (", debug);
-			ft_putnbr_fd(dots[i].x, debug);
-			ft_putstr_fd(", ", debug);
-			ft_putnbr_fd(dots[i].y, debug);
-			ft_putstr_fd(") ", debug);
-			ft_putnbr_fd(dots[i].my_dist, debug);
-			ft_putstr_fd(" - my, ", debug);
-			ft_putnbr_fd(dots[i].op_dist, debug);
-			ft_putstr_fd(" - op, ", debug);
-			ft_putnbr_fd(dots[i].op_dist - dots[i].my_dist, debug);
-			ft_putstr_fd(" - diff\n", debug);
-			if (dots[i].reached == 0 && dots[i].op_dist > max_dist)
+
+			distance_to_cell(map, &dist_map, me, 0, map.x - 1);
+			if (me_top < op_top)
 			{
-				max_dist = dots[i].op_dist;
-				best = i;
+				distance_to_cell(map, &dist_map, me, op_top - 1, 0);
+				ft_putstr_fd("attacking\n", debug);
 			}
-			
-			
-		}
-		ft_putnbr_fd(best, debug);
-		ft_putstr_fd(" - best, ", debug);
-		ft_putnbr_fd(max_dist, debug);
-		ft_putstr_fd(" - min diff\n", debug);
-		if (best != -1)
-		{
-			distance_to_cell(map, &dist_map, me, dots[best].x, dots[best].y);
-		}
-		else
-		{
-			distance_to_opponent(map, &dist_map, me, opponent);
-		}
-			
+			if (me_left <= 2)
+			{
+				distance_to_opponent(map, &dist_map, me, opponent);
+			}
 
-		// i = -1;
-		// while (++i < map.x)
-		// {
-		// 	j = -1;
-		// 	while (++j < map.y)
-		// 	{
-		// 		ft_putnbr_fd(dist_map[i][j], debug);
-		// 		ft_putchar_fd(' ', debug);
-		// 	}
-		// 	ft_putchar_fd('\n', debug);
-		// }
-		// ft_putchar_fd('\n', debug);
 
+			
 
 		put_piece(map, &dist_map, piece, me, opponent, debug, start_x, start_y);
-
-
 
 	}
 	return (0);
