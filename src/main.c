@@ -305,35 +305,80 @@ int		distance_to_cell(t_array map, int ***dist_map, char player, int x, int y)
 	return (min);
 }
 
-void	analyze_map(t_array map, int *me_top, int *op_top, int *me_left, int *op_left, char me, char opponent)
+void	analyze_map(t_array map, int *me_top, int *op_top, int *me_left, int *op_left, int *me_right, int *op_right, char me, char opponent)
 {
 	int i;
 	int j;
 
-	i = map.x;
-	while (--i >= 0)
+	int me_top_taken = 0;
+	int op_top_taken = 0;
+	int me_left_taken = 0;
+	int op_left_taken = 0;
+
+	i = -1;
+	while (++i < map.x)
 	{
 		j = -1;
 		while (++j < map.y)
 		{
 			if (ft_tolower(map.array[i][j]) == me)
-				*me_top = i;
+			{
+				if (!me_top_taken)
+				{
+					*me_top = i;
+					me_top_taken = 1;
+				}
+			}
 			if (ft_tolower(map.array[i][j]) == opponent)
-				*op_top = i;
+			{
+				if (!op_top_taken)
+				{
+					*op_top = i;
+					op_top_taken = 1;
+				}
+			}
 		}
 	}
-	j = map.y;
-	while (--j >= 0)
+
+
+	j = -1;
+	while (++j < map.y)
 	{
 		i = -1;
 		while (++i < map.x)
 		{
 			if (ft_tolower(map.array[i][j]) == me)
-				*me_left = j;
+			{
+				*me_right = j;
+				if (!me_left_taken)
+				{
+					*me_left = j;
+					me_left_taken = 1;
+				}
+			}
 			if (ft_tolower(map.array[i][j]) == opponent)
-				*op_left = j;
+			{
+				*op_right = j;
+				if (!op_left_taken)
+				{
+					*op_left = j;
+					op_left_taken = 1;
+				}
+			}
+				
 		}
 	}
+}
+
+int			way_closed(t_array map, int me_top, char opponent)
+{
+	int i = -1;
+	while (++i < me_top)
+	{
+		if (ft_tolower(map.array[i][map.y - 1]) == opponent)
+			return (1);
+	}
+	return (0);
 }
 
 int			main(void)
@@ -416,7 +461,9 @@ int			main(void)
 			int op_top = 0;
 			int me_left = 0;
 			int op_left = 0;
-			analyze_map(map, &me_top, &op_top, &me_left, &op_left, me, opponent);
+			int me_right = 0;
+			int op_right = 0;
+			analyze_map(map, &me_top, &op_top, &me_left, &op_left, &me_right, &op_right, me, opponent);
 			ft_putnbr_fd(me_top, debug);
 			ft_putstr_fd(" - me top\n", debug);
 			ft_putnbr_fd(op_top, debug);
@@ -425,17 +472,35 @@ int			main(void)
 			ft_putstr_fd(" - me left\n", debug);
 			ft_putnbr_fd(op_left, debug);
 			ft_putstr_fd(" - op left\n", debug);
+			ft_putnbr_fd(me_right, debug);
+			ft_putstr_fd(" - me right\n", debug);
+			ft_putnbr_fd(op_right, debug);
+			ft_putstr_fd(" - op right\n", debug);
 
 
-			distance_to_cell(map, &dist_map, me, 0, map.x - 1);
-			if (me_top < op_top)
+			if (me_top > op_top)
+			{
+				if (!way_closed(map, me_top, opponent))
+				{
+					distance_to_cell(map, &dist_map, me, 0, map.y - 1);
+					ft_putstr_fd("moving up\n", debug);
+				}
+				else
+				{
+					distance_to_cell(map, &dist_map, me, map.x - 1, 0);
+					ft_putstr_fd("way closed!\n", debug);
+				}
+			}
+			else
 			{
 				distance_to_cell(map, &dist_map, me, op_top - 1, 0);
-				ft_putstr_fd("attacking\n", debug);
+					ft_putstr_fd("closing\n", debug);
 			}
-			if (me_left <= 2)
+	
+			if (me_left <= 2 || map.x > 20)
 			{
 				distance_to_opponent(map, &dist_map, me, opponent);
+				ft_putstr_fd("attacking\n", debug);
 			}
 
 
