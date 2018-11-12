@@ -87,7 +87,9 @@ LIST =		ft_memset \
 			type_integer \
 			type_o \
 			type_s \
-			type_unsigned
+			type_unsigned \
+			ft_chartable \
+			ft_abs
 OBJ =		$(addprefix obj/, $(addsuffix .o, $(LIST)))
 
 all: $(NAME)
