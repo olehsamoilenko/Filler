@@ -84,16 +84,18 @@ void			reshape(t_array *piece, int *start_x, int *start_y)
 	}
 }
 
-void		read_map(t_array map)
+void		read_map(t_array *map)
 {
 	int		i;
 	char	*line;
 
+	get_next_line(0, &line); // skip 0123456789
+	ft_strdel(&line);
 	i = -1;
-	while (++i < map.x)
+	while (++i < map->x)
 	{
 		get_next_line(0, &line);
-		ft_strcpy(&map.array[i][0], &line[4]);
+		ft_strcpy(&map->array[i][0], &line[4]);
 		ft_strdel(&line);
 	}
 }
@@ -105,19 +107,19 @@ t_array		read_piece(char *params, int *piece_start_x, int *piece_start_y)
 	int		i;
 	t_array	piece;
 
-		output = ft_strsplit(params, ' ');
-		ft_strdel(&params);
-		piece.x = ft_atoi(output[1]);
-		piece.y = ft_atoi(output[2]);
-		ft_arrclr(output);
-		piece.array = ft_chartable(piece.x, piece.y);
-		i = -1;
-		while (++i < piece.x)
-		{
-			get_next_line(0, &line);
-			ft_strcpy(piece.array[i], &line[0]);
-			ft_strdel(&line);
-		}
-		reshape(&piece, piece_start_x, piece_start_y);
-		return (piece);
+	output = ft_strsplit(params, ' ');
+	ft_strdel(&params);
+	piece.x = ft_atoi(output[1]);
+	piece.y = ft_atoi(output[2]);
+	ft_arrclr(output);
+	piece.array = ft_chartable(piece.x, piece.y);
+	i = -1;
+	while (++i < piece.x)
+	{
+		get_next_line(0, &line);
+		ft_strcpy(piece.array[i], &line[0]);
+		ft_strdel(&line);
+	}
+	reshape(&piece, piece_start_x, piece_start_y);
+	return (piece);
 }

@@ -43,6 +43,8 @@ void		put_piece(t_array map, int **dist_map, t_array piece, char me, char oppone
 	int stacking_sum;
 	int dist_min = 10000;
 
+	*put_x = 0;
+	*put_y = 0;
 	i = -1;
 	while (++i < map.x)
 	{
