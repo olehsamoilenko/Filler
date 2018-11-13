@@ -12,7 +12,7 @@
 
 #include "filler.h"
 
-int		distance_sum(t_array map, int **dist_map, int *stacking_sum, char me, char opponent, int i, int j, t_array piece)
+int		distance_sum(t_game *game, int **dist_map, int *stacking_sum, char me, char opponent, int i, int j, t_array piece)
 {
 	int dist_sum = 0;
 	int n = -1;
@@ -25,9 +25,9 @@ int		distance_sum(t_array map, int **dist_map, int *stacking_sum, char me, char 
 		{
 			if (piece.array[n][m] == '*')
 			{
-				if (ft_tolower(map.array[i + n][j + m]) == me)
+				if (ft_tolower(game->map[i + n][j + m]) == me)
 					*stacking_sum+=1;
-				else if (ft_tolower(map.array[i + n][j + m]) == opponent)
+				else if (ft_tolower(game->map[i + n][j + m]) == opponent)
 					*stacking_sum += 2;
 				dist_sum += dist_map[i + n][j + m];
 			} 
@@ -36,7 +36,7 @@ int		distance_sum(t_array map, int **dist_map, int *stacking_sum, char me, char 
 	return (dist_sum);
 }
 
-void		put_piece(t_array map, int **dist_map, t_array piece, char me, char opponent, int *put_x, int *put_y)
+void		put_piece(t_game *game, int **dist_map, t_array piece, char me, char opponent, int *put_x, int *put_y)
 {
 	int i;
 	int j;
@@ -46,19 +46,19 @@ void		put_piece(t_array map, int **dist_map, t_array piece, char me, char oppone
 	*put_x = 0;
 	*put_y = 0;
 	i = -1;
-	while (++i < map.x)
+	while (++i < game->x)
 	{
 		j = -1;
-		while (++j < map.y)
+		while (++j < game->y)
 		{
 			stacking_sum = 0;
-			if (i + piece.x <= map.x && j + piece.y <= map.y &&
-			distance_sum(map, dist_map, &stacking_sum, me, opponent, i, j, piece) < dist_min &&
+			if (i + piece.x <= game->x && j + piece.y <= game->y &&
+			distance_sum(game, dist_map, &stacking_sum, me, opponent, i, j, piece) < dist_min &&
 			stacking_sum == 1)
 			{
 				*put_x = i;
 				*put_y = j;
-				dist_min = distance_sum(map, dist_map, &stacking_sum, me, opponent, i, j, piece);
+				dist_min = distance_sum(game, dist_map, &stacking_sum, me, opponent, i, j, piece);
 			}
 		}
 	}
