@@ -31,6 +31,13 @@ typedef struct		s_game
 
 }					t_game;
 
+typedef struct		s_piece
+{
+	t_array piece;
+	int		start_x;
+	int		start_y;
+}					t_piece;
+
 t_array		create_map(char *plateau, int ***dist_map);
 void		read_map(t_array *map);
 t_array		read_piece(char *params, int *piece_start_x, int *piece_start_y);
