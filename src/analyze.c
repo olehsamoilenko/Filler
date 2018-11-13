@@ -18,10 +18,10 @@ int		top(t_game *game, char player)
 	int		j;
 
 	i = -1;
-	while (++i < game->x)
+	while (++i < game->x_map)
 	{
 		j = -1;
-		while (++j < game->y)
+		while (++j < game->y_map)
 		{
 			if (ft_tolower(game->map[i][j]) == player)
 				return (i);
@@ -36,10 +36,10 @@ int		left(t_game *game, char player)
 	int		j;
 
 	j = -1;
-	while (++j < game->y)
+	while (++j < game->y_map)
 	{
 		i = -1;
-		while (++i < game->x)
+		while (++i < game->x_map)
 		{
 			if (ft_tolower(game->map[i][j]) == player)
 				return (j);
@@ -53,7 +53,7 @@ int		way_closed(t_game *game, int me_top, char opponent)
 	int i = -1;
 	while (++i < me_top)
 	{
-		if (ft_tolower(game->map[i][game->y - 1]) == opponent)
+		if (ft_tolower(game->map[i][game->y_map - 1]) == opponent)
 			return (1);
 	}
 	return (0);
@@ -69,13 +69,13 @@ void	analyze_map(t_game *game, int **dist_map, char me, char opponent)
 	if (me_top > op_top)
 	{
 		if (!way_closed(game, me_top, opponent))
-			distance_to_cell(game, &dist_map, me, 0, game->y - 1);
+			distance_to_cell(game, &dist_map, me, 0, game->y_map - 1);
 		else
-			distance_to_cell(game, &dist_map, me, game->x - 1, 0);
+			distance_to_cell(game, &dist_map, me, game->x_map - 1, 0);
 	}
 	else
 		distance_to_cell(game, &dist_map, me, op_top - 1, 0);
-	if (me_left <= 2 || game->x > 20)
+	if (me_left <= 2 || game->x_map > 20)
 		distance_to_opponent(game, &dist_map, me, opponent);
 }
 

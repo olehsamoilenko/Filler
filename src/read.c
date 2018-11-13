@@ -92,7 +92,7 @@ void		read_map(t_game *game)
 	get_next_line(0, &line); // skip 0123456789
 	ft_strdel(&line);
 	i = -1;
-	while (++i < game->x)
+	while (++i < game->x_map)
 	{
 		get_next_line(0, &line);
 		ft_strcpy(&game->map[i][0], &line[4]);

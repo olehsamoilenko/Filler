@@ -25,8 +25,8 @@ typedef struct		s_array
 typedef struct		s_game
 {
 	char	**map;
-	int		x;
-	int		y;
+	int		x_map;
+	int		y_map;
 	int		**dist_map;
 	char	me;
 	char	opponent;

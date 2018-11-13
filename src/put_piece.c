@@ -46,13 +46,13 @@ void		put_piece(t_game *game, int **dist_map, t_array piece, char me, char oppon
 	*put_x = 0;
 	*put_y = 0;
 	i = -1;
-	while (++i < game->x)
+	while (++i < game->x_map)
 	{
 		j = -1;
-		while (++j < game->y)
+		while (++j < game->y_map)
 		{
 			stacking_sum = 0;
-			if (i + piece.x <= game->x && j + piece.y <= game->y &&
+			if (i + piece.x <= game->x_map && j + piece.y <= game->y_map &&
 			distance_sum(game, dist_map, &stacking_sum, me, opponent, i, j, piece) < dist_min &&
 			stacking_sum == 1)
 			{
