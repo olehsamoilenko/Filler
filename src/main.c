@@ -42,7 +42,6 @@ int			main(void)
 	t_game	game;
 
 	t_piece	piece;
-
 	piece.array = NULL;
 	
 
@@ -55,14 +54,15 @@ int			main(void)
 		if (!ft_strstr(line, "Plateau"))
 			return (0);
 		if (game.map.array == NULL)
-			create_map(&game, line, &game.map);
+			create_map(line, &game);
 		ft_strdel(&line);
-		read_map(&game, &game.map);
+		read_map(&game);
 		get_next_line(0, &line);
 		ft_arrclr(piece.array);
 
 		piece = read_piece(line);
-		analyze_map(&game, &game.map, game.me, game.opponent);
+
+		analyze_map(&game);
 		put_piece(&game, &game.map, &piece, game.me, game.opponent, &put_x, &put_y);
 		
 		ft_printf("%i %i\n", put_x - piece.start_x, put_y - piece.start_y);
