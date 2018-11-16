@@ -12,7 +12,7 @@
 
 #include "filler.h"
 
-void		create_map(t_game *game, char *plateau, int ***dist_map)
+void		create_map(t_game *game, char *plateau, t_map *map)
 {
 	char	**output;
 	int		i;
@@ -20,17 +20,17 @@ void		create_map(t_game *game, char *plateau, int ***dist_map)
 
 
 	output = ft_strsplit(plateau, ' ');
-	game->x_map = ft_atoi(output[1]);
-	game->y_map = ft_atoi(output[2]);
+	map->x = ft_atoi(output[1]);
+	map->y = ft_atoi(output[2]);
 	ft_arrclr(output);
-	game->map = ft_chartable(game->x_map, game->y_map);
-	*dist_map = (int**)ft_memalloc(game->x_map * sizeof(int*));
+	map->array = ft_chartable(map->x, map->y);
+	map->int_array = (int**)ft_memalloc(map->x * sizeof(int*));
 	i = -1;
-	while (++i < game->x_map)
+	while (++i < map->x)
 	{
-		(*dist_map)[i] = (int*)ft_memalloc(game->y_map * sizeof(int));
+		map->int_array[i] = (int*)ft_memalloc(map->y * sizeof(int));
 		j = -1;
-		while (++j < game->y_map)
-			(*dist_map)[i][j] = -1;
+		while (++j < map->y)
+			map->int_array[i][j] = -1;
 	}
 }

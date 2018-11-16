@@ -14,7 +14,7 @@
 
 
 
-void		read_map(t_game *game)
+void		read_map(t_game *game, t_map *map)
 {
 	int		i;
 	char	*line;
@@ -22,10 +22,10 @@ void		read_map(t_game *game)
 	get_next_line(0, &line); // skip 0123456789
 	ft_strdel(&line);
 	i = -1;
-	while (++i < game->x_map)
+	while (++i < map->x)
 	{
 		get_next_line(0, &line);
-		ft_strcpy(&game->map[i][0], &line[4]);
+		ft_strcpy(&map->array[i][0], &line[4]);
 		ft_strdel(&line);
 	}
 }
