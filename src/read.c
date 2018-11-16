@@ -12,77 +12,7 @@
 
 #include "filler.h"
 
-// void	start_end_x(t_array *piece, int *start_x, int *end_x)
-// {
-// 	int i;
-// 	int		x_found = 0;
 
-// 	i = -1;
-// 	while (++i < piece->x)
-// 	{
-// 		if (ft_strchr(piece->array[i], '*'))
-// 		{
-// 			*end_x = i;
-// 			if (!x_found)
-// 			{
-// 				*start_x = i;
-// 				x_found = 1;
-// 			}
-// 		}
-// 	}
-// }
-
-// void	start_end_y(t_array *piece, int *start_y, int *end_y)
-// {
-// 	int	i;
-// 	int j;
-// 		int		y_found = 0;
-
-// 	i = -1;
-// 	while (++i < piece->y)
-// 	{
-// 		j = -1;
-// 		while (++j < piece->x)
-// 		{
-// 			if (piece->array[j][i] == '*')
-// 			{
-// 				*end_y = i;
-// 				if (!y_found)
-// 				{
-// 					*start_y = i;
-// 					y_found = 1;
-// 				}
-// 			}
-// 		}
-// 	}
-// }
-
-// void			reshape(t_piece *piece, int *start_x, int *start_y)
-// {
-// 	int	i;
-// 	int	j;
-// 	int	end_x;
-// 	int	end_y;
-
-// 	start_end_x(piece, start_x, &end_x);
-// 	start_end_y(piece, start_y, &end_y);
-// 	if (end_x - *start_x + 1 != piece->x || end_y - *start_y + 1 != piece->y)
-// 	{
-// 		char **buf = piece->array;
-		
-// 		piece->x = end_x - *start_x + 1;
-// 		piece->y = end_y - *start_y + 1;
-// 		piece->array = ft_chartable(piece->x, piece->y);
-// 		i = -1;
-// 		while (++i < piece->x)
-// 		{
-// 			j = -1;
-// 			while (++j < piece->y)
-// 				piece->array[i][j] = buf[i + *start_x][j + *start_y];
-// 		}
-// 		ft_arrclr(buf);
-// 	}
-// }
 
 void		read_map(t_game *game)
 {
@@ -100,26 +30,99 @@ void		read_map(t_game *game)
 	}
 }
 
-char		**read_piece(char *params, int *piece_start_x, int *piece_start_y, int *x, int *y)
+void	start_end_x(t_piece *piece, int *end_x)
+{
+	int i;
+	int		x_found = 0;
+
+	i = -1;
+	while (++i < piece->x)
+	{
+		if (ft_strchr(piece->array[i], '*'))
+		{
+			*end_x = i;
+			if (!x_found)
+			{
+				piece->start_x = i;
+				x_found = 1;
+			}
+		}
+	}
+}
+
+void	start_end_y(t_piece *piece, int *end_y)
+{
+	int	i;
+	int j;
+		int		y_found = 0;
+
+	i = -1;
+	while (++i < piece->y)
+	{
+		j = -1;
+		while (++j < piece->x)
+		{
+			if (piece->array[j][i] == '*')
+			{
+				*end_y = i;
+				if (!y_found)
+				{
+					piece->start_y = i;
+					y_found = 1;
+				}
+			}
+		}
+	}
+}
+
+void			reshape(t_piece *piece)
+{
+	int	i;
+	int	j;
+	int	end_x;
+	int	end_y;
+
+	start_end_x(piece, &end_x);
+	start_end_y(piece, &end_y);
+	if (end_x - piece->start_x + 1 != piece->x || end_y - piece->start_y + 1 != piece->y)
+	{
+		char **buf = piece->array;
+		
+		piece->x = end_x - piece->start_x + 1;
+		piece->y = end_y - piece->start_y + 1;
+		piece->array = ft_chartable(piece->x, piece->y);
+		i = -1;
+		while (++i < piece->x)
+		{
+			j = -1;
+			while (++j < piece->y)
+				piece->array[i][j] = buf[i + piece->start_x][j + piece->start_y];
+		}
+		ft_arrclr(buf);
+	}
+}
+
+t_piece		read_piece(char *params)
 {
 	char	*line;
 	char	**output;
 	int		i;
-	char	**array;
+	t_piece	piece;
 
 	output = ft_strsplit(params, ' ');
 	ft_strdel(&params);
-	*x = ft_atoi(output[1]);
-	*y = ft_atoi(output[2]);
+	piece.x = ft_atoi(output[1]);
+	piece.y = ft_atoi(output[2]);
 	ft_arrclr(output);
-	array = ft_chartable(*x, *y);
+	piece.array = ft_chartable(piece.x, piece.y);
 	i = -1;
-	while (++i < *x)
+	while (++i < piece.x)
 	{
 		get_next_line(0, &line);
-		ft_strcpy(array[i], &line[0]);
+		ft_strcpy(piece.array[i], &line[0]);
 		ft_strdel(&line);
 	}
-	// reshape(&piece, piece_start_x, piece_start_y);
-	return (array);
+	reshape(&piece);
+
+	return (piece);
 }

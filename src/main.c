@@ -60,11 +60,10 @@ int			main(void)
 		get_next_line(0, &line);
 		ft_arrclr(piece.array);
 
-		piece.array = read_piece(line, &piece.start_x, &piece.start_y, &piece.x, &piece.y);
+		piece = read_piece(line);
 		analyze_map(&game, game.dist_map, game.me, game.opponent);
-		put_piece(&game, game.dist_map, piece, game.me, game.opponent, &put_x, &put_y);
-		piece.start_x = 0;
-		piece.start_y = 0;
+		put_piece(&game, game.dist_map, &piece, game.me, game.opponent, &put_x, &put_y);
+		
 		ft_printf("%i %i\n", put_x - piece.start_x, put_y - piece.start_y);
 	}
 	return (0);
