@@ -12,7 +12,7 @@
 
 #include "filler.h"
 
-int		distance_sum(t_game *game, int **dist_map, int *stacking_sum, char me, char opponent, int i, int j, t_array piece)
+int		distance_sum(t_game *game, int **dist_map, int *stacking_sum, char me, char opponent, int i, int j, t_piece piece)
 {
 	int dist_sum = 0;
 	int n = -1;
@@ -36,7 +36,7 @@ int		distance_sum(t_game *game, int **dist_map, int *stacking_sum, char me, char
 	return (dist_sum);
 }
 
-void		put_piece(t_game *game, int **dist_map, t_array piece, char me, char opponent, int *put_x, int *put_y)
+void		put_piece(t_game *game, int **dist_map, t_piece piece, char me, char opponent, int *put_x, int *put_y)
 {
 	int i;
 	int j;

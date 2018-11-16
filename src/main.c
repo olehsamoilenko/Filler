@@ -40,11 +40,11 @@ int			main(void)
 	
 
 	t_game	game;
-	t_piece	figure;
+	t_piece	piece;
 
-	figure.piece.array = NULL;
-	figure.start_x = 0;
-	figure.start_y = 0;
+	piece.array = NULL;
+	
+
 
 	
 	choose_player(&game);
@@ -57,13 +57,15 @@ int			main(void)
 			create_map(&game, line, &game.dist_map);
 		ft_strdel(&line);
 		read_map(&game);
-		// game.map = map;
 		get_next_line(0, &line);
-		ft_arrclr(figure.piece.array);
-		figure.piece = read_piece(line, &figure.start_x, &figure.start_y);
+		ft_arrclr(piece.array);
+
+		piece.array = read_piece(line, &piece.start_x, &piece.start_y, &piece.x, &piece.y);
 		analyze_map(&game, game.dist_map, game.me, game.opponent);
-		put_piece(&game, game.dist_map, figure.piece, game.me, game.opponent, &put_x, &put_y);
-		ft_printf("%i %i\n", put_x - figure.start_x, put_y - figure.start_y);
+		put_piece(&game, game.dist_map, piece, game.me, game.opponent, &put_x, &put_y);
+		piece.start_x = 0;
+		piece.start_y = 0;
+		ft_printf("%i %i\n", put_x - piece.start_x, put_y - piece.start_y);
 	}
 	return (0);
 }
