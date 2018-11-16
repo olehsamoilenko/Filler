@@ -28,6 +28,7 @@ typedef struct		s_map
 
 typedef struct		s_game
 {
+	t_map	map;
 	char	me;
 	char	opponent;
 

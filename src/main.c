@@ -33,14 +33,14 @@ void		choose_player(t_game *game)
 int			main(void)
 {
 	char	*line;
-	// t_array	map;
+
 
 	int		put_x;
 	int		put_y;
 	
 
 	t_game	game;
-	t_map	map;
+
 	t_piece	piece;
 
 	piece.array = NULL;
@@ -54,16 +54,16 @@ int			main(void)
 		get_next_line(0, &line);
 		if (!ft_strstr(line, "Plateau"))
 			return (0);
-		if (map.array == NULL)
-			create_map(&game, line, &map);
+		if (game.map.array == NULL)
+			create_map(&game, line, &game.map);
 		ft_strdel(&line);
-		read_map(&game, &map);
+		read_map(&game, &game.map);
 		get_next_line(0, &line);
 		ft_arrclr(piece.array);
 
 		piece = read_piece(line);
-		analyze_map(&game, &map, game.me, game.opponent);
-		put_piece(&game, &map, &piece, game.me, game.opponent, &put_x, &put_y);
+		analyze_map(&game, &game.map, game.me, game.opponent);
+		put_piece(&game, &game.map, &piece, game.me, game.opponent, &put_x, &put_y);
 		
 		ft_printf("%i %i\n", put_x - piece.start_x, put_y - piece.start_y);
 	}
