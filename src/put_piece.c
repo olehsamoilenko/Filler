@@ -12,12 +12,14 @@
 
 #include "filler.h"
 
-int		distance_sum(t_game *game, int *stacking_sum, int i, int j)
+int		distance_sum(t_game *game, int *sum, int i, int j)
 {
-	int dist_sum = 0;
-	int n = -1;
+	int dist_sum;
+	int n;
 	int m;
 
+	dist_sum = 0;
+	n = -1;
 	while (++n < game->piece.x)
 	{
 		m = -1;
@@ -26,21 +28,22 @@ int		distance_sum(t_game *game, int *stacking_sum, int i, int j)
 			if (game->piece.array[n][m] == '*')
 			{
 				if (ft_tolower(game->map.array[i + n][j + m]) == game->me)
-					*stacking_sum+=1;
-				else if (ft_tolower(game->map.array[i + n][j + m]) == game->opponent)
-					*stacking_sum += 2;
+					*sum += 1;
+				else if (ft_tolower(game->map.array[i + n][j + m]) ==
+					game->opponent)
+					*sum += 2;
 				dist_sum += game->map.int_array[i + n][j + m];
-			} 
+			}
 		}
 	}
 	return (dist_sum);
 }
 
-void		put_piece(t_game *game, int *put_x, int *put_y)
+void	put_piece(t_game *game, int *put_x, int *put_y)
 {
 	int i;
 	int j;
-	int stacking_sum;
+	int sum;
 	int dist_min;
 
 	dist_min = 10000;
@@ -52,14 +55,14 @@ void		put_piece(t_game *game, int *put_x, int *put_y)
 		j = -1;
 		while (++j < game->map.y)
 		{
-			stacking_sum = 0;
-			if (i + game->piece.x <= game->map.x && j + game->piece.y <= game->map.y &&
-			distance_sum(game, &stacking_sum, i, j) < dist_min &&
-			stacking_sum == 1)
+			sum = 0;
+			if (i + game->piece.x <= game->map.x &&
+			j + game->piece.y <= game->map.y &&
+			distance_sum(game, &sum, i, j) < dist_min && sum == 1)
 			{
 				*put_x = i;
 				*put_y = j;
-				dist_min = distance_sum(game, &stacking_sum, i, j);
+				dist_min = distance_sum(game, &sum, i, j);
 			}
 		}
 	}

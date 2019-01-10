@@ -14,7 +14,7 @@ NAME =			osamoile.filler
 INC =			-I ./includes \
 				-I ./libft/includes
 LIB =			-lft -L ./libft
-FLAGS =			#-Wall -Wextra -Werror
+FLAGS =			-Wall -Wextra -Werror
 LIST =			main \
 				read \
 				create_map \
@@ -26,11 +26,11 @@ OBJ =			$(addprefix obj/, $(addsuffix .o, $(LIST)))
 all: $(NAME)
 
 obj/%.o: src/%.c
-	gcc $(FLAGS) -c $< -o $@ $(INC)
+	@gcc $(FLAGS) -c $< -o $@ $(INC)
 
 $(NAME): obj $(OBJ)
 	@make -C libft
-	gcc $(OBJ) -o $(NAME) $(LIB)
+	@gcc $(OBJ) -o $(NAME) $(LIB)
 
 obj:
 	@mkdir obj

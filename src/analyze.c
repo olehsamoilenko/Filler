@@ -80,5 +80,5 @@ void	analyze_map(t_game *game)
 	else
 		distance_to_cell(game->map, game->me, op_top - 1, 0);
 	if (me_left <= 2 || game->map.x > 20)
-		distance_to_opponent(game->map, game->me, game->opponent);
+		distance_to_opponent(game->map, game->opponent);
 }

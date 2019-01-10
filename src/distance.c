@@ -33,7 +33,7 @@ int		distance_to_cell(t_map map, char me, int x, int y)
 	return (min);
 }
 
-void	distance_to_opponent(t_map map, char me, char opponent)
+void	distance_to_opponent(t_map map, char opponent)
 {
 	int		i;
 	int		j;
