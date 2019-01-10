@@ -23,7 +23,6 @@ typedef struct		s_map
 	int		**int_array;
 }					t_map;
 
-
 typedef struct		s_game
 {
 	t_map	map;
@@ -44,9 +43,9 @@ typedef struct		s_piece
 void		create_map(char *plateau, t_game *game);
 void		read_map(t_game *game);
 t_piece		read_piece(char *params);
-int		distance_to_cell(t_map map, char me, int x, int y);
+int			distance_to_cell(t_map map, char me, int x, int y);
 void		distance_to_opponent(t_map map, char me, char opponent);
-void	analyze_map(t_game *game);
-void		put_piece(t_game *game, t_map *map, t_piece *piece, char me, char opponent, int *put_x, int *put_y);
+void		analyze_map(t_game *game);
+void		put_piece(t_game *game, t_map *map, t_piece *piece, int *put_x, int *put_y);
 
 #endif

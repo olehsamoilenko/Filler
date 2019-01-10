@@ -36,7 +36,7 @@ int		distance_sum(t_game *game, int *stacking_sum, int i, int j, t_piece *piece)
 	return (dist_sum);
 }
 
-void		put_piece(t_game *game, t_map *map, t_piece *piece, char me, char opponent, int *put_x, int *put_y)
+void		put_piece(t_game *game, t_map *map, t_piece *piece, int *put_x, int *put_y)
 {
 	int i;
 	int j;
