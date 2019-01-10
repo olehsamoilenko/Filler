@@ -50,7 +50,9 @@ int		left(t_map map, char player)
 
 int		way_closed(t_game *game, int me_top)
 {
-	int i = -1;
+	int		i;
+
+	i = -1;
 	while (++i < me_top)
 	{
 		if (ft_tolower(game->map.array[i][game->map.y - 1]) == game->opponent)
@@ -61,11 +63,13 @@ int		way_closed(t_game *game, int me_top)
 
 void	analyze_map(t_game *game)
 {
-	int		me_top = top(game->map, game->me);
-	int		op_top = top(game->map, game->opponent);
-	int		me_left = left(game->map, game->me);
+	int		me_top;
+	int		op_top;
+	int		me_left;
 
-
+	me_top = top(game->map, game->me);
+	op_top = top(game->map, game->opponent);
+	me_left = left(game->map, game->me);
 	if (me_top > op_top)
 	{
 		if (!way_closed(game, me_top))
@@ -78,6 +82,3 @@ void	analyze_map(t_game *game)
 	if (me_left <= 2 || game->map.x > 20)
 		distance_to_opponent(game->map, game->me, game->opponent);
 }
-
-
-

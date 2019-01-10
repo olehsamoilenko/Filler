@@ -18,7 +18,6 @@ void		create_map(char *plateau, t_game *game)
 	int		i;
 	int		j;
 
-
 	output = ft_strsplit(plateau, ' ');
 	game->map.x = ft_atoi(output[1]);
 	game->map.y = ft_atoi(output[2]);
