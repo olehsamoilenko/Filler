@@ -23,14 +23,6 @@ typedef struct		s_map
 	int		**int_array;
 }					t_map;
 
-typedef struct		s_game
-{
-	t_map	map;
-	char	me;
-	char	opponent;
-
-}					t_game;
-
 typedef struct		s_piece
 {
 	char	**array;
@@ -39,6 +31,15 @@ typedef struct		s_piece
 	int		start_x;
 	int		start_y;
 }					t_piece;
+
+typedef struct		s_game
+{
+	t_piece	piece;
+	t_map	map;
+	char	me;
+	char	opponent;
+
+}					t_game;
 
 void		create_map(char *plateau, t_game *game);
 void		read_map(t_game *game);

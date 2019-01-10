@@ -36,9 +36,8 @@ int			main(void)
 	int		put_x;
 	int		put_y;
 	t_game	game;
-	t_piece	piece;
 
-	piece.array = NULL;
+	game.piece.array = NULL;
 	choose_player(&game);
 	while (1)
 	{
@@ -50,11 +49,11 @@ int			main(void)
 		ft_strdel(&line);
 		read_map(&game);
 		get_next_line(0, &line);
-		ft_arrclr(piece.array);
-		piece = read_piece(line);
+		ft_arrclr(game.piece.array);
+		game.piece = read_piece(line);
 		analyze_map(&game);
-		put_piece(&game, &game.map, &piece, &put_x, &put_y);
-		ft_printf("%i %i\n", put_x - piece.start_x, put_y - piece.start_y);
+		put_piece(&game, &game.map, &game.piece, &put_x, &put_y);
+		ft_printf("%i %i\n", put_x - game.piece.start_x, put_y - game.piece.start_y);
 	}
 	return (0);
 }
