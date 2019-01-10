@@ -30,11 +30,10 @@ int		distance_to_cell(t_map map, char me, int x, int y)
 				min = map.int_array[i][j];
 		}
 	}
-	
 	return (min);
 }
 
-void		distance_to_opponent(t_map map, char me, char opponent)
+void	distance_to_opponent(t_map map, char me, char opponent)
 {
 	int		i;
 	int		j;
@@ -59,7 +58,6 @@ void		distance_to_opponent(t_map map, char me, char opponent)
 						map.int_array[i][j] = ft_abs(n - i) + ft_abs(m - j);
 				}
 			}
-			
 		}
 	}
 }

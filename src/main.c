@@ -52,8 +52,9 @@ int			main(void)
 		ft_arrclr(game.piece.array);
 		game.piece = read_piece(line);
 		analyze_map(&game);
-		put_piece(&game, &game.map, &game.piece, &put_x, &put_y);
-		ft_printf("%i %i\n", put_x - game.piece.start_x, put_y - game.piece.start_y);
+		put_piece(&game, &put_x, &put_y);
+		ft_printf("%i %i\n",
+			put_x - game.piece.start_x, put_y - game.piece.start_y);
 	}
 	return (0);
 }
