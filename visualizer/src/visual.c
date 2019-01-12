@@ -22,7 +22,6 @@
 #define GREEN_LEAF "\xF0\x9F\x8D\x80"
 #define RED_LEAF "\xF0\x9F\x8D\x81"
 
-
 void	get_players(char **pl1, char **pl2)
 {
 	int i = -1;
@@ -40,9 +39,55 @@ void	get_players(char **pl1, char **pl2)
 	get_next_line(0, &line);
 	*pl2 = ft_strsub(line, ft_strrchr(line, '/') - line + 1, ft_strlen(line) - (ft_strrchr(line, '/') - line));
 	ft_strdel(&line);
-	refresh(); // ?
 }
 
+
+void	create_wins(char *line, t_visual *v)
+{
+	char **nums = ft_strsplit(line, ' ');
+	v->m_heigth = ft_atoi(nums[1]);
+	v->m_width = ft_atoi(nums[2]);
+	refresh();
+	v->map = newwin(v->m_heigth + 2, (v->m_width + 2) * 2, 0, 0);
+	v->scale = newwin(5, 2 * SCALE_LEN + 4, v->m_heigth / 2 - 1, (v->m_width + 2) * 2 + 10);
+	mvwaddstr(v->scale, 1, LB_IND - ft_strlen(v->p1_name) / 2, v->p1_name);
+	mvwaddstr(v->scale, 1, SCALE_LEN * 2 - LB_IND - ft_strlen(v->p2_name) / 2, v->p2_name);
+	box(v->map, 0, 0);
+	box(v->scale, 0, 0);
+	wrefresh(v->scale);
+	// refresh();
+	start_color();
+	
+	init_pair(1, COLOR_WHITE, COLOR_GREEN);
+	init_pair(2, COLOR_WHITE, COLOR_RED);
+	init_pair(3, COLOR_WHITE, COLOR_BLACK);
+	init_pair(4, COLOR_CYAN, COLOR_BLACK);
+	// init_pair(4, COLOR_BLACK, COLOR_BLACK);
+}
+
+void	show_scale(WINDOW *scale, int p1, int p2)
+{
+	char	*n;
+	int		i;
+	int		percent;
+	
+	n = ft_itoa(p1);
+	mvwaddstr(scale, 3, LB_IND - ft_strlen(n) / 2, n);
+	ft_strdel(&n);
+	
+	n = ft_itoa(p2);
+	mvwaddstr(scale, 3, 2 * SCALE_LEN - LB_IND - ft_strlen(n) /2, n);
+	ft_strdel(&n);
+
+	percent = SCALE_LEN * p1 / (p1 + p2);
+	i = 0;
+	while (++i < percent)
+		mvwaddstr(scale, 2, 2 * i, GREEN_LEAF);
+	
+	while (i++ < SCALE_LEN)
+		mvwaddstr(scale, 2, 2 * i, RED_LEAF);
+	wrefresh(scale);
+}
 
 
 int		main(void)
@@ -55,49 +100,21 @@ int		main(void)
 
 	initscr();
 	curs_set(0);
-
-	int term_size = LINES * COLS;
+	v->term_size = LINES * COLS;
 	
-	// WINDOW *map;
-	// WINDOW *scale;
-
-
-	// char *pl1;
-	// char *pl2;
 	int p1;
 	int p2;
-	char *n1 = NULL;
-	char *n2 = NULL;
+	// char *n;
+
 	get_players(&v->p1_name, &v->p2_name);
 	
 	
 	while (1)
 	{
-		// ft_strdel(&line);
 		get_next_line(0, &line);
-
 		if (v->m_heigth == 0 && ft_strstr(line, "Plateau"))
-		{
-			char **nums = ft_strsplit(line, ' ');
-			v->m_heigth = ft_atoi(nums[1]);
-			v->m_width = ft_atoi(nums[2]);
-			refresh();
-			v->map = newwin(v->m_heigth + 2, (v->m_width + 2) * 2, 0, 0);
-			v->scale = newwin(5, 2 * SCALE_LEN + 4, v->m_heigth / 2 - 1, (v->m_width + 2) * 2 + 10);
-			mvwaddstr(v->scale, 1, LB_IND - ft_strlen(v->p1_name) / 2, v->p1_name);
-			mvwaddstr(v->scale, 1, SCALE_LEN * 2 - LB_IND - ft_strlen(v->p2_name) / 2, v->p2_name);
-			box(v->map, 0, 0);
-			box(v->scale, 0, 0);
-			wrefresh(v->scale);
-			// refresh();
-			start_color();
-			
-			init_pair(1, COLOR_WHITE, COLOR_GREEN);
-			init_pair(2, COLOR_WHITE, COLOR_RED);
-			init_pair(3, COLOR_WHITE, COLOR_BLACK);
-			init_pair(4, COLOR_CYAN, COLOR_BLACK);
-			// init_pair(4, COLOR_BLACK, COLOR_BLACK);
-		}
+			create_wins(line, v);
+
 
 		if (ft_strstr(line, "0123456789"))
 		{
@@ -138,22 +155,7 @@ int		main(void)
 
 			}
 			wrefresh(v->map);
-
-			ft_strdel(&n1);
-			n1 = ft_itoa(p1);
-			ft_strdel(&n2);
-			n2 = ft_itoa(p2);
-			mvwaddstr(v->scale, 3, LB_IND - ft_strlen(n1) / 2, n1);
-			mvwaddstr(v->scale, 3, 2 * SCALE_LEN - LB_IND - ft_strlen(n2) /2, n2);
-			int p1_percent = SCALE_LEN * p1 / (p1 + p2);
-			i = 0;
-			while (++i < p1_percent)
-				mvwaddstr(v->scale, 2, 2 * i, GREEN_LEAF);
-			
-			while (i++ < SCALE_LEN)
-				mvwaddstr(v->scale, 2, 2 * i, RED_LEAF);
-			wrefresh(v->scale);
-
+			show_scale(v->scale, p1, p2);
 
 
 		}
@@ -169,7 +171,7 @@ int		main(void)
 			wrefresh(v->scale);
 			break;
 		}
-		if (LINES * COLS != term_size)
+		if (LINES * COLS != v->term_size)
 		{
 			delwin(v->map);
 			delwin(v->scale);
@@ -188,19 +190,10 @@ int		main(void)
 		usleep(DELAY);
 	}
 
-
-
 	freopen("/dev/tty", "r", stdin);
 	getch();
 	delwin(v->map);
 	delwin(v->scale);
 	endwin();
-
-
-
 	return (0);
-
-
-
-
 } 

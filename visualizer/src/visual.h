@@ -19,6 +19,7 @@ typedef struct		s_visual
 	WINDOW	*map;
 	int		m_heigth;
 	int		m_width;
+	int		term_size;
 	WINDOW	*scale;
 	char	*p1_name;
 	char	*p2_name;
