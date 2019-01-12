@@ -10,8 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// typedef struct		s_map
-// {
-// 	char			**map;
-// 	struct s_map	*next;
-// }					t_map;
+#include <curses.h>
+#include "libft.h"
+
+typedef struct		s_visual
+{
+	
+	WINDOW	*map;
+	int		m_heigth;
+	int		m_width;
+	WINDOW	*scale;
+	char	*p1_name;
+	char	*p2_name;
+}					t_visual;
