@@ -11,11 +11,19 @@
 /* ************************************************************************** */
 
 #include <curses.h>
+#include <locale.h>
 #include "libft.h"
+
+#define COLOR_PINK "\033[1;35m"
+#define COLOR_RESET "\033[0m"
+#define DELAY 10000
+#define SCALE_LEN 40
+#define LBL_IND 15
+#define GREEN_LEAF "\xF0\x9F\x8D\x80"
+#define RED_LEAF "\xF0\x9F\x8D\x81"
 
 typedef struct		s_visual
 {
-	
 	WINDOW	*map;
 	int		m_heigth;
 	int		m_width;
