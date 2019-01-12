@@ -30,6 +30,7 @@ obj/%.o: src/%.c
 
 $(NAME): obj $(OBJ)
 	@make -C libft
+	@make -C visualizer
 	@gcc $(OBJ) -o $(NAME) $(LIB)
 
 obj:

@@ -13,68 +13,66 @@
 #include <curses.h>
 #include <locale.h> // smiles
 #include <fcntl.h> // files
-// #include <unistd.h>
-#define ENTER 107
-#define DELAY 50000
+#include "libft.h"
+
+#define ESC 27
+#define DELAY 10
 #define GREEN_LEAF "\xF0\x9F\x8D\x80"
 #define RED_LEAF "\xF0\x9F\x8D\x81"
 
-#include <stdio.h>
-#include "libft.h"
+void	get_players()
+{
+	int i = -1;
+	char *line;
+	while (++i < 5)
+	{
+		get_next_line(0, &line);
+		ft_strdel(&line);
+	}
+	get_next_line(0, &line);
+	char *p1 = ft_strsub(line, ft_strrchr(line, '/') - line + 1, ft_strlen(line) - (ft_strrchr(line, '/') - line));
+	ft_strdel(&line);
+	mvaddstr(20, 0, p1);
+	get_next_line(0, &line);
+	ft_strdel(&line);
+	get_next_line(0, &line);
+	char *p2 = ft_strsub(line, ft_strrchr(line, '/') - line + 1, ft_strlen(line) - (ft_strrchr(line, '/') - line));
+	ft_strdel(&line);
+	mvaddstr(21, 0, p2);
+	refresh();
+}
 
-
-
-	// attron(A_BOLD);
-
-	// int offsetx = (COLS - width) / 2;
-	// int offsety = (LINES - height) / 2;
-	// WINDOW *win = newwin(0, 0, 0, 0);
-
-int		draw()
+void	scale()
 {
 	
 
-	// char *hello = "Hello world";
-	// mvaddstr(LINES / 2, (COLS - ft_strlen(hello)) / 2, hello);
-	// WINDOW *win = newwin(10, 10, 10, 10);
-	// box(win, '*', '&');
-	// wprintw(win, GREEN_LEAF);
-	// wrefresh(win);
-	// delwin(win);
+	
 
-	return (0);
 }
 
 int		main(void)
 {
 	char *line;
+	
 	int fd = open("test.txt", O_RDWR | O_CREAT);
 	setlocale(LC_ALL, "");
 
-	int i = -1;
-	while (++i < 9)
-	{
-		get_next_line(0, &line);
-		ft_strdel(&line);
-	}
+	
 
 	initscr();
 	curs_set(0);
+	
+	WINDOW *map;
+	get_players();
 
-
-
-	start_color();
-	init_pair(0, COLOR_WHITE, COLOR_BLACK);
-	init_pair(1, COLOR_WHITE, COLOR_GREEN);
-	init_pair(2, COLOR_WHITE, COLOR_RED);
-
+	
 
 	int lines = 0;
 	int width;
 
 	while (1)
 	{
-		ft_strdel(&line);
+		// ft_strdel(&line);
 		get_next_line(0, &line);
 
 		if (lines == 0 && ft_strstr(line, "Plateau"))
@@ -82,12 +80,23 @@ int		main(void)
 			char **nums = ft_strsplit(line, ' ');
 			lines = ft_atoi(nums[1]);
 			width = ft_atoi(nums[2]);
+			// refresh();
+			map = newwin(lines + 2, (width + 2) * 2, 0, 0);
+			box(map, 0, 0);
+			start_color();
+			
+			init_pair(1, COLOR_WHITE, COLOR_GREEN);
+			init_pair(2, COLOR_WHITE, COLOR_RED);
+			init_pair(3, COLOR_WHITE, COLOR_BLACK);
+			init_pair(4, COLOR_BLACK, COLOR_BLACK);
 		}
 
 		if (ft_strstr(line, "0123456789"))
 		{
-			i = -1;
+			int i = -1;
 			// clear();
+			int p1 = 0;
+			int p2 = 0;
 			while (++i < lines)
 			{
 				ft_strdel(&line);
@@ -97,18 +106,31 @@ int		main(void)
 				while (++j < width + 4)
 				{
 					if (line[j] == 'o')
-						color_set(1, NULL);
+						wattron(map, COLOR_PAIR(1));
 					else if (line[j] == 'x')
-						color_set(2, NULL);
+					{
+						wattron(map, COLOR_PAIR(2));
+					}
 					if (line[j] == 'O' || line[j] == 'o')
-						mvaddstr(i, 2 * j - 8, GREEN_LEAF);
+					{
+						mvwaddstr(map, i + 1, 2 * j - 6, GREEN_LEAF);
+						p1++;
+					}
 					else if (line[j] == 'X' || line[j] == 'x')
-						mvaddstr(i, 2 * j - 8, RED_LEAF);
+					{
+						mvwaddstr(map, i + 1, 2 * j - 6, RED_LEAF);
+						p2++;
+					}
 					else
-						mvaddch(i, 2 * j - 8, line[j]);
-					color_set(0, NULL);
+					{
+						mvwaddch(map, i + 1, 2 * j - 6, line[j]);
+					}
+					wattron(map, COLOR_PAIR(3));
 				}
 			}
+			mvaddstr(20, 20, ft_itoa(p1));
+			mvaddstr(21, 20, ft_itoa(p2));
+			wrefresh(map);
 			refresh();
 		}
 		if (ft_strstr(line, "== X"))
@@ -116,18 +138,15 @@ int		main(void)
 		usleep(DELAY);
 	}
 
-
-
-	
+	color_set(4, NULL);
 	freopen("/dev/tty", "r", stdin);
-	int ch = getch();
+	int ch;
+	while (ch != ESC)
+		ch = getch();
 	ft_putnbr_fd(ch, fd);
 
-	// FILE *tty = fopen("/dev/tty", "r");
-	// int c = getc(tty);
-	// ft_putnbr_fd(c, fd);
-
 	
+	delwin(map);
 	endwin();
 
 	return (0);
