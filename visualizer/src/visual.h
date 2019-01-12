@@ -23,4 +23,6 @@ typedef struct		s_visual
 	WINDOW	*scale;
 	char	*p1_name;
 	char	*p2_name;
+	int		p1_points;
+	int		p2_points;
 }					t_visual;
