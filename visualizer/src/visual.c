@@ -12,6 +12,8 @@
 
 #include "visual.h"
 
+#include <fcntl.h>
+
 void	get_players(t_visual *v)
 {
 	int		i = -1;
@@ -50,6 +52,7 @@ void	init_wins(char *line, t_visual *v)
 	setlocale(LC_ALL, "");
 	initscr();
 	curs_set(0);
+	// resizeterm(200, 500);
 	v->term_size = LINES * COLS;
 	read_sizes(line, v);
 	refresh();
@@ -110,6 +113,8 @@ void	print_line(char *line, int i, t_visual *v)
 	j = 3;
 	while (++j < v->m_width + 4)
 	{
+		// if (LINES * COLS != v->term_size) // HERE
+		// 	exit(0);
 		if (line[j] == 'o')
 			wattron(v->map, COLOR_PAIR(1));
 		else if (line[j] == 'x')
@@ -130,6 +135,31 @@ void	print_line(char *line, int i, t_visual *v)
 	}
 }
 
+void	handle_resize(t_visual *v, char *line)
+{
+	delwin(v->map);
+	delwin(v->scale);
+	endwin();
+	ft_strdel(&line);
+	while (get_next_line(0, &line))
+	{
+		ft_printf("%s\n", line);
+		ft_strdel(&line);
+	}
+	while (get_next_line(0, &line))
+	{
+		ft_printf("%s\n", line);
+		ft_strdel(&line);
+	}
+	freopen("/dev/tty", "r", stdin);
+	ft_printf("%s%s\n%s",
+		COLOR_PINK,
+		"Error: please don't resize terminal during visualizer processing.",
+		COLOR_RESET);
+	system("leaks visualizer");
+	exit(0);
+}
+
 void	show_map(t_visual *v)
 {
 	v->p1_points = 0;
@@ -139,8 +169,11 @@ void	show_map(t_visual *v)
 	while (++i < v->m_heigth)
 	{
 		get_next_line(0, &line);
+
+		if (ft_strlen(line) != v->m_width + 4)
+			handle_resize(v, line);
 		print_line(line, i, v);
-		ft_strdel(&line);
+		ft_strdel(&line);	
 	}
 	wrefresh(v->map);
 }
@@ -154,34 +187,18 @@ void	over(t_visual *v)
 	endwin();
 }
 
-void	handle_resize(t_visual *v, char *line)
-{
-	delwin(v->map);
-	delwin(v->scale);
-	endwin();
-	// ft_strdel(&line);
-	// while (get_next_line(0, &line))
-	// {
-	// 	ft_printf("%s\n", line);
-	// 	ft_strdel(&line);
-	// }
-	freopen("/dev/tty", "r", stdin);
-	ft_printf("%s%s\n%s",
-		COLOR_PINK,
-		"Error: please don't resize terminal during visualizer processing.",
-		COLOR_RESET);
-	exit(0);
-}
 
 int		main(void)
 {
 	char		*line;
 	t_visual	*v;
-	
+
 	v = ft_memalloc(sizeof(t_visual));
 	get_players(v);
 	while (1)
 	{
+		if (LINES * COLS != v->term_size)
+			handle_resize(v, line);
 		get_next_line(0, &line);
 		if (v->m_heigth == 0 && ft_strstr(line, "Plateau"))
 			init_wins(line, v);
@@ -192,8 +209,6 @@ int		main(void)
 		}
 		if (ft_strstr(line, "== X"))
 			break;
-		if (LINES * COLS != v->term_size) // HERE
-			handle_resize(v, line);
 		ft_strdel(&line);
 		usleep(-100 * (v->m_heigth - 100));
 	}
