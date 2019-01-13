@@ -25,18 +25,15 @@ obj/%.o: src/%.c
 	@gcc $(FLAGS) -c $< -o $@ $(INC)
 
 $(NAME): obj $(OBJ)
-	@make -C ../libft
 	@gcc $(OBJ) -o $(NAME) $(LIB)
 
 obj:
 	@mkdir obj
 
 clean:
-	@make -C ../libft clean
 	@rm -rf obj
 	
 fclean: clean
-	@make -C ../libft fclean
 	@rm -f $(NAME)
 
 re: fclean all
