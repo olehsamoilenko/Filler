@@ -11,31 +11,32 @@
 # **************************************************************************** #
 
 NAME =			visualizer
-INC =			-I ../libft/includes #-I ./includes
-				
+INC =			-I ../libft/includes -I ./includes
 LIB =			-lncurses -lft -L ../libft
-FLAGS =			#-Wall -Wextra -Werror
-LIST =			visual
+FLAGS =			-Wall -Wextra -Werror
+LIST =			main \
+				show \
+				init
 OBJ =			$(addprefix obj/, $(addsuffix .o, $(LIST)))
 
 all: $(NAME)
 
 obj/%.o: src/%.c
-	gcc $(FLAGS) -c $< -o $@ $(INC)
+	@gcc $(FLAGS) -c $< -o $@ $(INC)
 
 $(NAME): obj $(OBJ)
-	make -C ../libft
-	gcc $(OBJ) -o $(NAME) $(LIB)
+	@make -C ../libft
+	@gcc $(OBJ) -o $(NAME) $(LIB)
 
 obj:
 	@mkdir obj
 
 clean:
 	@make -C ../libft clean
-	rm -rf obj
+	@rm -rf obj
 	
 fclean: clean
 	@make -C ../libft fclean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
