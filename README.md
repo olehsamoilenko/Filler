@@ -15,11 +15,12 @@ A map consist:
 - 'o' character - the start point of the first player
 - 'x' character - the start point of the second player
 
+
 Unique features:
 -----
 * [ncurses](http://dkhramov.dp.ua/Comp.NcursesTutorial#.XLBLGpj7RPa) visualizer
 
-
+![filler](http://g.recordit.co/ExEjAtnKje.gif)
 
 Run the project:
 -----
