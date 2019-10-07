@@ -26,7 +26,7 @@ Run the project:
 -----
 
 ```
-git clone --recursive https://github.com/olehsamoilenko/Filler.git
+git clone **--recursive** https://github.com/olehsamoilenko/Filler.git
 cd Filler
 make
 ./resourses/filler_vm -p1 osamoile.filler -p2 resourses/players/other_player.filler -f resourses/maps/map[00,01,02] | ./visualiser/visualiser
