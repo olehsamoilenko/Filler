@@ -26,10 +26,9 @@ Run the project:
 -----
 
 ```
-git clone **--recursive** https://github.com/olehsamoilenko/Filler.git
-cd Filler
-make
+git clone --recursive https://github.com/olehsamoilenko/Filler.git
+cd Filler && make
 ./resourses/filler_vm -p1 osamoile.filler -p2 resourses/players/other_player.filler -f resourses/maps/map[00,01,02] | ./visualiser/visualiser
 ```
 
-:green_apple: Works only on **Mac OS**
+:green_apple: Tested only on **Mac OS**
